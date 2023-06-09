@@ -26,21 +26,22 @@ func init() {
 
 func HandleRequest(instances Instance) ([]string, error) {
 
-	result, err := client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
-		InstanceIds: instances.InstanceIDs,
-	})
-	if err != nil {
-		return []string{}, err
-	}
+	// result, err := client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
+	// 	InstanceIds: instances.InstanceIDs,
+	// })
+	// if err != nil {
+	// 	return []string{}, err
+	// }
 
 	var status []string
-	for _, r := range result.Reservations {
-		for _, i := range r.Instances {
-			status = append(status, fmt.Sprintf("InstanceID: %v State: %v", *i.InstanceId, i.State.Name))
-		}
+	// for _, r := range result.Reservations {
+	// 	for _, i := range r.Instances {
+	// 		status = append(status, fmt.Sprintf("InstanceID: %v State: %v", *i.InstanceId, i.State.Name))
+	// 	}
 
-		fmt.Println("")
-	}
+	// 	fmt.Println("")
+	// }
+
 	status = append(status, fmt.Sprintf("key: %v value: %v", "This is golang", "will need db connect"))
 
 	return status, nil

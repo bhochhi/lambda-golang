@@ -1,18 +1,16 @@
-
-
 # Configure the AWS provider
 provider "aws" {
   region = "us-east-1"  # Set your desired region
 }
 
 # Create the Lambda function
-resource "aws_lambda_function" "hello_lambda" {
-  filename         = "hello_lambda.zip"
-  function_name    = "hello_lambda"
+resource "aws_lambda_function" "main" {
+  filename         = "main.zip"
+  function_name    = "main"
   role             = aws_iam_role.hello_lambda_role.arn
   handler          = "main"
   runtime          = "go1.x"
-  source_code_hash = sha256(filebase64("hello_lambda.zip"))
+  source_code_hash = sha256(filebase64("main.zip"))
 }
 
 # Create the IAM role for the Lambda function
@@ -35,22 +33,22 @@ resource "aws_iam_role" "hello_lambda_role" {
 EOF
 }
 
-# Attach the necessary IAM policy to the Lambda role
-resource "aws_iam_role_policy_attachment" "AWSLambdaBasicExecutionRole" {
-  role       = aws_iam_role.hello_lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
+# # Attach the necessary IAM policy to the Lambda role
+# resource "aws_iam_role_policy_attachment" "AWSLambdaBasicExecutionRole" {
+#   role       = aws_iam_role.hello_lambda_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+# }
 
-# Attach the necessary IAM policy to the Lambda role
-resource "aws_iam_role_policy_attachment" "describe-my-ec2" {
-  role       = aws_iam_role.hello_lambda_role.name
-  policy_arn = "arn:aws:iam::610591786715:policy/describe-my-ec2"
-}
+# # Attach the necessary IAM policy to the Lambda role
+# resource "aws_iam_role_policy_attachment" "describe-my-ec2" {
+#   role       = aws_iam_role.hello_lambda_role.name
+#   policy_arn = "arn:aws:iam::610591786715:policy/describe-my-ec2"
+# }
 
 # Create the API Gateway
 resource "aws_api_gateway_rest_api" "hello_lambda_api" {
   name        = "hello_lambda_api"
-  description = "Example API"
+  description = "hello labmda API"
 }
 
 # Create the API Gateway resource and method
@@ -72,9 +70,9 @@ resource "aws_api_gateway_integration" "hello_lambda_integration" {
   rest_api_id             = aws_api_gateway_rest_api.hello_lambda_api.id
   resource_id             = aws_api_gateway_resource.hello_resource.id
   http_method             = aws_api_gateway_method.hello_method.http_method
-  integration_http_method = "POST"
+  integration_http_method = "GET"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.hello_lambda.invoke_arn
+  uri                     = aws_lambda_function.main.invoke_arn
 }
 
 # Create the API Gateway deployment
