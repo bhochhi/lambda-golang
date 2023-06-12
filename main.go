@@ -6,22 +6,18 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
 type Instance struct {
 	InstanceIDs []string `json:"InstanceID"`
 }
 
-var client *ec2.Client
-
 func init() {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+	_, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 	if err != nil {
 		panic("configuration error, " + err.Error())
 	}
 
-	client = ec2.NewFromConfig(cfg)
 }
 
 func HandleRequest(instances Instance) ([]string, error) {
